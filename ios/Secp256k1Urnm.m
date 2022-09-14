@@ -35,7 +35,8 @@ secp256k1_context *kSecp256k1Context = nil;
 
 RCT_EXPORT_MODULE()
 
-RCT_EXPORT_METHOD(verify:(NSString *)data sig:(NSString *)sig pub:(NSString *)pub resolve:(RCTPromiseResolveBlock)resolve
+RCT_EXPORT_METHOD(verify:(NSString *)data sig:(NSString *)sig pub:(NSString *)pub
+                  resolve:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         unsigned char rawData[kMaxBufferLength];
@@ -50,21 +51,29 @@ RCT_EXPORT_METHOD(verify:(NSString *)data sig:(NSString *)sig pub:(NSString *)pu
         }
 
         secp256k1_ecdsa_signature sig;
+        if (!secp256k1_ecdsa_signature_parse_compact(kSecp256k1Context, &sig, rawSig)) {
+            resolve(@(1));
+            return;
+        }
+
         secp256k1_pubkey pubkey;
-        if (!secp256k1_ecdsa_signature_parse_der(kSecp256k1Context, &sig, rawSig, rawSigLen)) {
-            reject(@"Error", @"signature invalid", nil);
-            return;
-        }
         if (!secp256k1_ec_pubkey_parse(kSecp256k1Context, &pubkey, rawPub, rawPubLen)) {
-            reject(@"Error", @"pubkey invalid", nil);
+            resolve(@(2));
             return;
         }
-        int r = secp256k1_ecdsa_verify(kSecp256k1Context, &sig, rawData, &pubkey);
-        resolve([NSNumber numberWithInt:r]);
+
+        if(!secp256k1_ecdsa_verify(kSecp256k1Context, &sig, rawData, &pubkey)) {
+            resolve(@(3));
+            return;
+        }
+
+        resolve(@(0));
+        return;
     });
 }
 
-RCT_EXPORT_METHOD(sign:(NSString *)data priv:(NSString *)priv  resolve:(RCTPromiseResolveBlock)resolve
+RCT_EXPORT_METHOD(sign:(NSString *)data priv:(NSString *)priv
+                  resolve:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         unsigned char rawData[kMaxBufferLength];
@@ -75,20 +84,25 @@ RCT_EXPORT_METHOD(sign:(NSString *)data priv:(NSString *)priv  resolve:(RCTPromi
             reject(@"Error", @"Data or Key invalid", nil);
             return;
         }
-        secp256k1_ecdsa_signature sig;
+        secp256k1_ecdsa_signature sig[72];
         if (!secp256k1_ecdsa_sign(kSecp256k1Context, &sig, rawData, rawPriv, NULL, NULL)) {
-            resolve(@"");
+            resolve(@(1));
             return;
         }
-        unsigned char rawSig[72];
-        size_t rawSigLen = 72;
-        secp256k1_ecdsa_signature_serialize_der(kSecp256k1Context, rawSig, &rawSigLen, &sig );
+
+        unsigned char rawSig[64];
+        size_t rawSigLen = 64;
+        if(!secp256k1_ecdsa_signature_serialize_compact(kSecp256k1Context, rawSig, &sig )){
+            resolve(@(2));
+            return;
+        }
 
         resolveBase64(resolve, rawSig, rawSigLen);
     });
 }
 
-RCT_EXPORT_METHOD(secKeyVerify:(NSString *)priv resolve:(RCTPromiseResolveBlock)resolve
+RCT_EXPORT_METHOD(secKeyVerify:(NSString *)priv
+                  resolve:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         unsigned char rawPriv[kMaxBufferLength];
@@ -103,7 +117,8 @@ RCT_EXPORT_METHOD(secKeyVerify:(NSString *)priv resolve:(RCTPromiseResolveBlock)
 }
 
 
-RCT_EXPORT_METHOD(computePubkey:(NSString *)priv compress:(BOOL)compress  resolve:(RCTPromiseResolveBlock)resolve
+RCT_EXPORT_METHOD(computePubkey:(NSString *)priv compress:(BOOL)compress
+                  resolve:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         unsigned char rawPriv[kMaxBufferLength];
@@ -126,7 +141,8 @@ RCT_EXPORT_METHOD(computePubkey:(NSString *)priv compress:(BOOL)compress  resolv
     });
 }
 
-RCT_EXPORT_METHOD(privKeyTweakAdd:(NSString *)priv data:(NSString *)data resolve:(RCTPromiseResolveBlock)resolve
+RCT_EXPORT_METHOD(privKeyTweakAdd:(NSString *)priv data:(NSString *)data
+                  resolve:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         unsigned char rawData[kMaxBufferLength];
@@ -144,7 +160,8 @@ RCT_EXPORT_METHOD(privKeyTweakAdd:(NSString *)priv data:(NSString *)data resolve
     });
 }
 
-RCT_EXPORT_METHOD(privKeyTweakMul:(NSString *)priv data:(NSString *)data resolve:(RCTPromiseResolveBlock)resolve
+RCT_EXPORT_METHOD(privKeyTweakMul:(NSString *)priv data:(NSString *)data
+                  resolve:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         unsigned char rawData[kMaxBufferLength];
@@ -162,7 +179,8 @@ RCT_EXPORT_METHOD(privKeyTweakMul:(NSString *)priv data:(NSString *)data resolve
     });
 }
 
-RCT_EXPORT_METHOD(pubKeyTweakMul:(NSString *)pub data:(NSString *)data resolve:(RCTPromiseResolveBlock)resolve
+RCT_EXPORT_METHOD(pubKeyTweakMul:(NSString *)pub data:(NSString *)data
+                  resolve:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         unsigned char rawData[kMaxBufferLength];
@@ -188,7 +206,8 @@ RCT_EXPORT_METHOD(pubKeyTweakMul:(NSString *)pub data:(NSString *)data resolve:(
     });
 }
 
-RCT_EXPORT_METHOD(pubKeyTweakAdd:(NSString *)pub data:(NSString *)data resolve:(RCTPromiseResolveBlock)resolve
+RCT_EXPORT_METHOD(pubKeyTweakAdd:(NSString *)pub data:(NSString *)data
+                  resolve:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         unsigned char rawData[kMaxBufferLength];
@@ -214,7 +233,8 @@ RCT_EXPORT_METHOD(pubKeyTweakAdd:(NSString *)pub data:(NSString *)data resolve:(
     });
 }
 
-RCT_EXPORT_METHOD(createECDHSecret:(NSString *)priv priv:(NSString *)pub resolve:(RCTPromiseResolveBlock)resolve
+RCT_EXPORT_METHOD(createECDHSecret:(NSString *)priv priv:(NSString *)pub
+                  resolve:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         unsigned char ecdh[32];

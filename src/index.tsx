@@ -2,6 +2,7 @@ import { NativeModules, Platform } from 'react-native';
 import stablelibUtil from './utils';
 import Secp256k1Ext from './ext';
 import secp256k1base64 from './secp256k1base64';
+import { errors, isUint8Array } from './errors';
 
 const LINKING_ERROR =
   `The package 'react-native-secp256k1-urnm' doesn't seem to be linked. Make sure: \n\n` +
@@ -20,28 +21,48 @@ const Secp256k1Urnm = NativeModules.Secp256k1Urnm
       }
     );
 
-export function multiply(a: number, b: number): Promise<number> {
-  return Secp256k1Urnm.multiply(a, b);
-}
-
 export async function verify(
-  data: Uint8Array,
-  signature: Uint8Array,
-  pub: Uint8Array
+  sig: Uint8Array,
+  msg32: Uint8Array,
+  pubkey: Uint8Array
 ): Promise<boolean> {
-  const bData = stablelibUtil.encodeBase64WithoutPadding(data);
-  const bSig = stablelibUtil.encodeBase64WithoutPadding(signature);
-  const bPub = stablelibUtil.encodeBase64WithoutPadding(pub);
+  isUint8Array('signature', sig, 64);
+  isUint8Array('message', msg32, 32);
+  isUint8Array('public key', pubkey, [33, 65]);
 
-  return await Secp256k1Urnm.verify(bData, bSig, bPub);
+  const bMsg32 = stablelibUtil.encodeBase64WithoutPadding(msg32);
+  const bSig = stablelibUtil.encodeBase64WithoutPadding(sig);
+  const bPub = stablelibUtil.encodeBase64WithoutPadding(pubkey);
+
+  switch (await Secp256k1Urnm.verify(bMsg32, bSig, bPub)) {
+    case 0:
+      return true;
+    case 3:
+      return false;
+    case 1:
+      throw new Error(errors.SIG_PARSE);
+    case 2:
+      throw new Error(errors.PUBKEY_PARSE);
+  }
+
+  return false;
 }
 export async function sign(
-  data: Uint8Array,
-  priv: Uint8Array
+  msg32: Uint8Array,
+  seckey: Uint8Array
 ): Promise<Uint8Array> {
-  const bData = stablelibUtil.encodeBase64WithoutPadding(data);
-  const bPriv = stablelibUtil.encodeBase64WithoutPadding(priv);
-  const bSignature = await Secp256k1Urnm.sign(bData, bPriv);
+  isUint8Array('message', msg32, 32);
+  isUint8Array('private key', seckey, 32);
+
+  const bMsg32 = stablelibUtil.encodeBase64WithoutPadding(msg32);
+  const bSeckey = stablelibUtil.encodeBase64WithoutPadding(seckey);
+  const bSignature = await Secp256k1Urnm.sign(bMsg32, bSeckey);
+  switch (bSignature) {
+    case 1:
+      throw new Error(errors.SIGN);
+    case 2:
+      throw new Error(errors.IMPOSSIBLE_CASE);
+  }
   return stablelibUtil.decodeBase64(bSignature);
 }
 

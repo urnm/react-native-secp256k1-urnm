@@ -7,7 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5E555C0D2413F4C50049A1A2 /* Secp256k1Urnm.m in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* Secp256k1Urnm.m */; };
+		13D9FA8928D26EEC0061A49A /* Secp256k1UrnmExt.m in Sources */ = {isa = PBXBuildFile; fileRef = 13D9FA8728D26EEC0061A49A /* Secp256k1UrnmExt.m */; };
+		13D9FA8A28D26EEC0061A49A /* base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 13D9FA8828D26EEC0061A49A /* base64.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -24,6 +25,12 @@
 
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libSecp256k1Urnm.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSecp256k1Urnm.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		13D9FA8528D26EEC0061A49A /* base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = base64.h; sourceTree = "<group>"; };
+		13D9FA8628D26EEC0061A49A /* Secp256k1UrnmExt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Secp256k1UrnmExt.h; sourceTree = "<group>"; };
+		13D9FA8728D26EEC0061A49A /* Secp256k1UrnmExt.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Secp256k1UrnmExt.m; sourceTree = "<group>"; };
+		13D9FA8828D26EEC0061A49A /* base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = base64.m; sourceTree = "<group>"; };
+		13D9FA8B28D26F0A0061A49A /* secp256k1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = secp256k1.h; path = ../android/jni/include/secp256k1.h; sourceTree = "<group>"; };
+		13D9FA8C28D26F0A0061A49A /* secp256k1_ecdh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = secp256k1_ecdh.h; path = ../android/jni/include/secp256k1_ecdh.h; sourceTree = "<group>"; };
 		B3E7B5881CC2AC0600A0062D /* Secp256k1Urnm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Secp256k1Urnm.h; sourceTree = "<group>"; };
 		B3E7B5891CC2AC0600A0062D /* Secp256k1Urnm.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Secp256k1Urnm.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -50,6 +57,12 @@
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
+				13D9FA8C28D26F0A0061A49A /* secp256k1_ecdh.h */,
+				13D9FA8B28D26F0A0061A49A /* secp256k1.h */,
+				13D9FA8528D26EEC0061A49A /* base64.h */,
+				13D9FA8828D26EEC0061A49A /* base64.m */,
+				13D9FA8628D26EEC0061A49A /* Secp256k1UrnmExt.h */,
+				13D9FA8728D26EEC0061A49A /* Secp256k1UrnmExt.m */,
 				B3E7B5881CC2AC0600A0062D /* Secp256k1Urnm.h */,
 				B3E7B5891CC2AC0600A0062D /* Secp256k1Urnm.m */,
 				134814211AA4EA7D00B7C361 /* Products */,
@@ -113,7 +126,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B3E7B58A1CC2AC0600A0062D /* Secp256k1Urnm.m in Sources */,
+				13D9FA8A28D26EEC0061A49A /* base64.m in Sources */,
+				13D9FA8928D26EEC0061A49A /* Secp256k1UrnmExt.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
