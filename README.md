@@ -1,5 +1,10 @@
 # react-native-secp256k1-urnm
 React Native Secp255k1 lib
+
+## Demo
+![Example test cases](https://user-images.githubusercontent.com/1748318/190282980-0e708264-d490-4104-998f-f05778f56fbc.png)
+![Example test cases GIF](https://user-images.githubusercontent.com/1748318/190282793-c8d132cb-5591-4f1c-aef4-1418ad6f489c.gif)
+
 ## Installation
 
 ```sh
