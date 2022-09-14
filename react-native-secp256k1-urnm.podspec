@@ -12,9 +12,27 @@ Pod::Spec.new do |s|
   s.authors      = package["author"]
 
   s.platforms    = { :ios => "10.0" }
+  s.requires_arc = true
   s.source       = { :git => "https://github.com/urnm/react-native-secp256k1-urnm/react-native-secp256k1-urnm.git", :tag => "#{s.version}" }
 
-  s.source_files = "ios/**/*.{h,m,mm}"
+  s.source_files =
+      "android/jni/include/secp256k1.h",
+      "android/jni/include/secp256k1_ecdh.h",
+      "android/src/main/cpp/native-crypto.cpp",
+      "android/src/main/cpp/native-crypto.h",
+      "android/src/main/cpp/scrypt/crypto_scrypt.c",
+      "android/src/main/cpp/scrypt/crypto_scrypt.h",
+      "android/src/main/cpp/scrypt/sha256.c",
+      "android/src/main/cpp/scrypt/sha256.h",
+      "android/src/main/cpp/scrypt/sysendian.h",
+      "ios/base64.h",
+      "ios/base64.m",
+      "ios/Secp256k1Urnm.h",
+      "ios/Secp256k1Urnm.m",
+      "ios/Secp256k1UrnmExt.h",
+      "ios/Secp256k1UrnmExt.m"
+  s.vendored_frameworks =
+    "ios/secp256k1.xcframework"
 
   s.dependency "React-Core"
 

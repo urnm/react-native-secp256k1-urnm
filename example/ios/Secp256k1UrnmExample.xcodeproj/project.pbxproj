@@ -295,7 +295,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.example.reactnativesecp256k1urnm";
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.reactnativesecp256k1urnm;
 				PRODUCT_NAME = Secp256k1UrnmExample;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -320,7 +320,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.example.reactnativesecp256k1urnm";
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.reactnativesecp256k1urnm;
 				PRODUCT_NAME = Secp256k1UrnmExample;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";

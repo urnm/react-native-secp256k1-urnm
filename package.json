@@ -28,7 +28,9 @@
     "prepare": "bob build",
     "release": "release-it",
     "example": "yarn --cwd example",
-    "bootstrap": "yarn example && yarn && yarn example pods"
+    "bootstrap": "yarn example && yarn && yarn example pods",
+    "example:android": "yarn example android",
+    "example:ios": "yarn example ios --simulator='iPhone 14'"
   },
   "keywords": [
     "react-native",
@@ -45,6 +47,10 @@
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
+  "dependencies": {
+    "@stablelib/base64": "^1.0.1",
+    "@stablelib/hex": "^1.0.1"
+  },
   "devDependencies": {
     "@arkweid/lefthook": "^0.7.7",
     "@babel/eslint-parser": "^7.18.2",
@@ -55,7 +61,7 @@
     "@types/react": "~17.0.21",
     "@types/react-native": "0.68.0",
     "commitlint": "^17.0.2",
-    "eslint": "^8.4.1",
+    "eslint": "8.22.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.0.0",
     "jest": "^28.1.1",
@@ -105,7 +111,7 @@
   },
   "eslintConfig": {
     "root": true,
-    "parser": "@babel/eslint-parser",
+    "parser": "@typescript-eslint/parser",
     "extends": [
       "@react-native-community",
       "prettier"
