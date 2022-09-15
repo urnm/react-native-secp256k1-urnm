@@ -1,8 +1,7 @@
 inherit lib
 
-# source="https://github.com/bitcoin-core/secp256k1.git#694ce8fb2d1fd8a3d641d7c33705691d41a2a860"
-# source="https://github.com/bitcoin-core/secp256k1.git#84973d393ac240a90b2e1a6538c5368202bc2224"
-source="https://github.com/ACINQ/secp256k1.git#5c4c153fd3246211422803113d4468e03c34e121"
+source="https://github.com/bitcoin-core/secp256k1.git#694ce8fb2d1fd8a3d641d7c33705691d41a2a860"
+# source="https://github.com/ACINQ/secp256k1.git#5c4c153fd3246211422803113d4468e03c34e121"
 
 build() {
     # Optimize:
@@ -14,9 +13,8 @@ build() {
     autoreconf -i
 
     ./configure --enable-experimental --host=$cross --prefix=$install_dir \
-        --disable-tests --enable-module-ecdh --with-bignum=no --with-field=32bit
-    # ./configure --host=$cross --prefix=$install_dir \
-    #    --disable-tests --with-bignum=no --with-field=32bit
+           --disable-tests --enable-module-ecdh --enable-module-recovery  \
+           --with-bignum=no --with-field=32bit
 
     make clean
     make

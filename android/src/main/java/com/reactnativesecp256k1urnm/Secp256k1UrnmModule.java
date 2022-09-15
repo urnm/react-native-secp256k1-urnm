@@ -12,6 +12,10 @@ import com.facebook.react.module.annotations.ReactModule;
 public class Secp256k1UrnmModule extends ReactContextBaseJavaModule {
     public static final String NAME = "Secp256k1Urnm";
 
+    static {
+      System.loadLibrary("secp256k1");
+    }
+
     public Secp256k1UrnmModule(ReactApplicationContext reactContext) {
         super(reactContext);
     }

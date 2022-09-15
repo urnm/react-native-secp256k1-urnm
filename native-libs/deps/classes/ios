@@ -49,7 +49,7 @@ build_ios() {
     export PKG_CONFIG_PATH=$install_dir/lib/pkgconfig
 
     cd $work_dir
-    build
+    build ios
 }
 build_iphoneos_armv7() {
     build_ios armv7 iPhoneOS

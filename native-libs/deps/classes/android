@@ -46,7 +46,7 @@ build_android() {
 
     cd $work_dir
 
-    build
+    build android
 }
 build_android_arm() {
     build_android arm arm-linux-androideabi
