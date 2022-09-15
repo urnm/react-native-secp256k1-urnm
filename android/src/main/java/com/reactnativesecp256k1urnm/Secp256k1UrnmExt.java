@@ -11,7 +11,7 @@ import com.facebook.react.bridge.ReactMethod;
 
 import org.bitcoin.NativeSecp256k1;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -31,8 +31,7 @@ public class Secp256k1UrnmExt extends ReactContextBaseJavaModule {
     Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");
     SecretKeySpec skeySpec = new SecretKeySpec(byteKey, "AES");
     cipher.init(opmode, skeySpec, iv);
-    byte[] decrypted = cipher.doFinal(byteData);
-    return decrypted;
+    return cipher.doFinal(byteData);
   }
 
   private void AesECDH(final String priv, final String pub, final byte[] data, final int mode, final Promise promise) {
@@ -71,7 +70,7 @@ public class Secp256k1UrnmExt extends ReactContextBaseJavaModule {
           int realLen = encryped.length - dataStart;
           byte[] realData = new byte[realLen];
           System.arraycopy(encryped, dataStart, realData, 0, realLen);
-          promise.resolve(new String(realData, "UTF-8"));
+          promise.resolve(new String(realData, StandardCharsets.UTF_8));
         }
       } catch (Exception ex) {
         ex.printStackTrace();
@@ -109,12 +108,7 @@ public class Secp256k1UrnmExt extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void encryptECDH(final String priv, final String pub, final String data, final Promise promise) {
-    try {
-      AesECDH(priv, pub, data.getBytes("UTF-8"), Cipher.ENCRYPT_MODE, promise);
-    } catch (UnsupportedEncodingException e) {
-      e.printStackTrace();
-      promise.reject("Error", e.toString());
-    }
+    AesECDH(priv, pub, data.getBytes(StandardCharsets.UTF_8), Cipher.ENCRYPT_MODE, promise);
   }
 
   @ReactMethod

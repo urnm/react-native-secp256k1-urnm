@@ -98,8 +98,8 @@ JNIEXPORT jobjectArray JNICALL Java_org_bitcoin_NativeSecp256k1_secp256k1_1ecdsa
                                       (*env)->FindClass(env, "[B"),
                                       (*env)->NewByteArray(env, 1));
 
-    sigArray = (*env)->NewByteArray(env, outputLen);
-    (*env)->SetByteArrayRegion(env, sigArray, 0, outputLen, (jbyte *) outputSer);
+    sigArray = (*env)->NewByteArray(env, (int) outputLen);
+    (*env)->SetByteArrayRegion(env, sigArray, 0, (int) outputLen, (jbyte *) outputSer);
     (*env)->SetObjectArrayElement(env, retArray, 0, sigArray);
 
     intsByteArray = (*env)->NewByteArray(env, 2);
@@ -152,8 +152,8 @@ JNIEXPORT jobjectArray JNICALL Java_org_bitcoin_NativeSecp256k1_secp256k1_1ec_1p
                                       (*env)->FindClass(env, "[B"),
                                       (*env)->NewByteArray(env, 1));
 
-    pubkeyArray = (*env)->NewByteArray(env, outputLen);
-    (*env)->SetByteArrayRegion(env, pubkeyArray, 0, outputLen, (jbyte *) outputSer);
+    pubkeyArray = (*env)->NewByteArray(env, (int) outputLen);
+    (*env)->SetByteArrayRegion(env, pubkeyArray, 0, (int) outputLen, (jbyte *) outputSer);
     (*env)->SetObjectArrayElement(env, retArray, 0, pubkeyArray);
 
     intsByteArray = (*env)->NewByteArray(env, 2);
@@ -269,8 +269,8 @@ JNIEXPORT jobjectArray JNICALL Java_org_bitcoin_NativeSecp256k1_secp256k1_1pubke
                                       (*env)->FindClass(env, "[B"),
                                       (*env)->NewByteArray(env, 1));
 
-    pubArray = (*env)->NewByteArray(env, outputLen);
-    (*env)->SetByteArrayRegion(env, pubArray, 0, outputLen, (jbyte *) outputSer);
+    pubArray = (*env)->NewByteArray(env, (int) outputLen);
+    (*env)->SetByteArrayRegion(env, pubArray, 0, (int) outputLen, (jbyte *) outputSer);
     (*env)->SetObjectArrayElement(env, retArray, 0, pubArray);
 
     intsByteArray = (*env)->NewByteArray(env, 2);
@@ -314,8 +314,8 @@ JNIEXPORT jobjectArray JNICALL Java_org_bitcoin_NativeSecp256k1_secp256k1_1pubke
                                       (*env)->FindClass(env, "[B"),
                                       (*env)->NewByteArray(env, 1));
 
-    pubArray = (*env)->NewByteArray(env, outputLen);
-    (*env)->SetByteArrayRegion(env, pubArray, 0, outputLen, (jbyte *) outputSer);
+    pubArray = (*env)->NewByteArray(env, (int) outputLen);
+    (*env)->SetByteArrayRegion(env, pubArray, 0, (int) outputLen, (jbyte *) outputSer);
     (*env)->SetObjectArrayElement(env, retArray, 0, pubArray);
 
     intsByteArray = (*env)->NewByteArray(env, 2);
@@ -325,17 +325,6 @@ JNIEXPORT jobjectArray JNICALL Java_org_bitcoin_NativeSecp256k1_secp256k1_1pubke
     (void) classObject;
 
     return retArray;
-}
-
-JNIEXPORT jlong JNICALL Java_org_bitcoin_NativeSecp256k1_secp256k1_1ecdsa_1pubkey_1combine
-        (JNIEnv *env, jclass classObject, jobject byteBufferObject, jlong ctx_l, jint numkeys) {
-    (void) classObject;
-    (void) env;
-    (void) byteBufferObject;
-    (void) ctx_l;
-    (void) numkeys;
-
-    return 0;
 }
 
 JNIEXPORT jobjectArray JNICALL Java_org_bitcoin_NativeSecp256k1_secp256k1_1ecdh
@@ -370,7 +359,7 @@ JNIEXPORT jobjectArray JNICALL Java_org_bitcoin_NativeSecp256k1_secp256k1_1ecdh
                                       (*env)->FindClass(env, "[B"),
                                       (*env)->NewByteArray(env, 1));
 
-    outArray = (*env)->NewByteArray(env, outputLen);
+    outArray = (*env)->NewByteArray(env, (int) outputLen);
     (*env)->SetByteArrayRegion(env, outArray, 0, 32, (jbyte *) nonce_res);
     (*env)->SetObjectArrayElement(env, retArray, 0, outArray);
 
