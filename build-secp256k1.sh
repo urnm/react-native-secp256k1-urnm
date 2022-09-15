@@ -39,6 +39,7 @@ cp $OUT_DIR/android/x86_64/lib/libsecp256k1.so $JNI_DIR/libs/x86_64/
 cp $OUT_DIR/android/x86/lib/libsecp256k1.so $JNI_DIR/libs/x86/
 cp $OUT_DIR/android/arm/include/secp256k1.h $JNI_DIR/include/
 cp $OUT_DIR/android/arm/include/secp256k1_ecdh.h $JNI_DIR/include/
+cp $OUT_DIR/android/arm/include/secp256k1_recovery.h $JNI_DIR/include/
 
 # Use lipo to squash together iOS libraries:
 mkdir -p $BUILD_DIR/lipo-iphoneos

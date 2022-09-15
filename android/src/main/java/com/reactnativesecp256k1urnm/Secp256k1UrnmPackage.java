@@ -12,17 +12,18 @@ import java.util.Collections;
 import java.util.List;
 
 public class Secp256k1UrnmPackage implements ReactPackage {
-    @NonNull
-    @Override
-    public List<NativeModule> createNativeModules(@NonNull ReactApplicationContext reactContext) {
-        List<NativeModule> modules = new ArrayList<>();
-        modules.add(new Secp256k1UrnmModule(reactContext));
-        return modules;
-    }
+  @NonNull
+  @Override
+  public List<NativeModule> createNativeModules(@NonNull ReactApplicationContext reactContext) {
+    List<NativeModule> modules = new ArrayList<>();
+    modules.add(new Secp256k1UrnmModule(reactContext));
+    modules.add(new Secp256k1UrnmExt(reactContext));
+    return modules;
+  }
 
-    @NonNull
-    @Override
-    public List<ViewManager> createViewManagers(@NonNull ReactApplicationContext reactContext) {
-        return Collections.emptyList();
-    }
+  @NonNull
+  @Override
+  public List<ViewManager> createViewManagers(@NonNull ReactApplicationContext reactContext) {
+    return Collections.emptyList();
+  }
 }
