@@ -20,7 +20,7 @@ import java.util.concurrent.Executors;
 @ReactModule(name = Secp256k1UrnmModule.NAME)
 public class Secp256k1UrnmModule extends ReactContextBaseJavaModule {
   public static final String NAME = "Secp256k1Urnm";
-  
+
   // this loads the library when the class is loaded
   static {
     System.loadLibrary("secp256k1");

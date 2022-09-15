@@ -21,7 +21,7 @@ public class NativeSecp256k1Test {
     byte[] sig = BaseEncoding.base16().lowerCase().decode("3044022079BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F817980220294F14E883B3F525B5367756C2A11EF6CF84B730B36C17CB0C56F0AAB2C98589".toLowerCase());
     byte[] pub = BaseEncoding.base16().lowerCase().decode("040A629506E1B65CD9D2E0BA9C75DF9C4FED0DB16DC9625ED14397F0AFC836FAE595DC53F8B0EFE61E703075BD9B143BAC75EC0E19F82A2208CAEB32BE53414C40".toLowerCase());
 
-    result = org.bitcoin.NativeSecp256k1.verify(data, sig, pub);
+    result = org.bitcoin.NativeSecp256k1.verify(data, sig, pub) == 0;
     assertEquals(result, true, "testVerifyPos");
   }
 
@@ -34,7 +34,7 @@ public class NativeSecp256k1Test {
     byte[] sig = BaseEncoding.base16().lowerCase().decode("3044022079BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F817980220294F14E883B3F525B5367756C2A11EF6CF84B730B36C17CB0C56F0AAB2C98589".toLowerCase());
     byte[] pub = BaseEncoding.base16().lowerCase().decode("040A629506E1B65CD9D2E0BA9C75DF9C4FED0DB16DC9625ED14397F0AFC836FAE595DC53F8B0EFE61E703075BD9B143BAC75EC0E19F82A2208CAEB32BE53414C40".toLowerCase());
 
-    result = org.bitcoin.NativeSecp256k1.verify(data, sig, pub);
+    result = org.bitcoin.NativeSecp256k1.verify(data, sig, pub) == 0;
     //System.out.println(" TEST " + new BigInteger(1, resultbytes).toString(16));
     assertEquals(result, false, "testVerifyNeg");
   }

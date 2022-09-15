@@ -54,19 +54,23 @@ JNIEXPORT jint JNICALL Java_org_bitcoin_NativeSecp256k1_secp256k1_1ecdsa_1verify
     secp256k1_ecdsa_signature sig;
     secp256k1_pubkey pubkey;
 
-    int ret = secp256k1_ecdsa_signature_parse_der(ctx, &sig, sigdata, siglen);
+    if (!secp256k1_ecdsa_signature_parse_compact(ctx, &sig, sigdata)) {
+        (void) classObject;
+        return 1;
+    }
 
-    if (ret) {
-        ret = secp256k1_ec_pubkey_parse(ctx, &pubkey, pubdata, publen);
+    if (!secp256k1_ec_pubkey_parse(ctx, &pubkey, pubdata, publen)) {
+        (void) classObject;
+        return 2;
+    }
 
-        if (ret) {
-            ret = secp256k1_ecdsa_verify(ctx, &sig, data, &pubkey);
-        }
+    if (!secp256k1_ecdsa_verify(ctx, &sig, data, &pubkey)) {
+        (void) classObject;
+        return 3;
     }
 
     (void) classObject;
-
-    return ret;
+    return 0;
 }
 
 JNIEXPORT jobjectArray JNICALL Java_org_bitcoin_NativeSecp256k1_secp256k1_1ecdsa_1sign
@@ -86,13 +90,18 @@ JNIEXPORT jobjectArray JNICALL Java_org_bitcoin_NativeSecp256k1_secp256k1_1ecdsa
     unsigned char outputSer[64];
     size_t outputLen = 64;
 
+    int ret2 = ret == 0 ? 1 : 0;
+
     if (ret) {
-        int ret2 = secp256k1_ecdsa_signature_serialize_compact(ctx, outputSer, sig);
-        (void) ret2;
+        int ret3 = secp256k1_ecdsa_signature_serialize_compact(ctx, outputSer, sig);
+        ret2 = ret3 == 0 ? 2 : 0;
+        (void) ret3;
     }
+    (void) ret;
 
     intsarray[0] = outputLen;
-    intsarray[1] = ret;
+    intsarray[1] = ret2;
+    (void) ret2;
 
     retArray = (*env)->NewObjectArray(env, 2,
                                       (*env)->FindClass(env, "[B"),

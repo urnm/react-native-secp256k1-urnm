@@ -54,7 +54,7 @@ public class NativeSecp256k1 {
    * @param signature The signature
    * @param pub       The public key which did the signing
    */
-  public static boolean verify(byte[] data, byte[] signature, byte[] pub) {
+  public static int verify(byte[] data, byte[] signature, byte[] pub) {
     Preconditions.checkArgument(data.length == 32 && signature.length <= 520 && pub.length <= 520);
 
     ByteBuffer byteBuff = nativeECDSABuffer.get();
@@ -72,7 +72,7 @@ public class NativeSecp256k1 {
 
     r.lock();
     try {
-      return secp256k1_ecdsa_verify(byteBuff, Secp256k1Context.getContext(), signature.length, pub.length) == 1;
+      return secp256k1_ecdsa_verify(byteBuff, Secp256k1Context.getContext(), signature.length, pub.length);
     } finally {
       r.unlock();
     }
@@ -114,8 +114,14 @@ public class NativeSecp256k1 {
     int retVal = new BigInteger(new byte[]{retByteArray[1][1]}).intValue();
 
     assertEquals(sigArr.length, sigLen, "Got bad signature length.");
+    if (retVal == 1) {
+      throw new AssertFailException("FAIL: The nonce generation function failed, or the private key was invalid.");
+    }
+    if (retVal == 2) {
+      throw new AssertFailException("FAIL: Impossible case. Please create issue.");
+    }
 
-    return retVal == 0 ? new byte[0] : sigArr;
+    return retVal == 0 ? sigArr : new byte[0];
   }
 
   /**
