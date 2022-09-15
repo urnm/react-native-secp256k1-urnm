@@ -38,6 +38,13 @@ android {
     versionCode 1
     versionName '0.1.0'
   }
+  sourceSets {
+    main {
+      java {
+        exclude "**/NativeSecp256k1Test.java"
+      }
+    }
+  }
   buildTypes {
     release {
       minifyEnabled false
@@ -145,4 +152,7 @@ if (isNewArchitectureEnabled()) {
     libraryName = "Secp256k1Urnm"
     codegenJavaPackageName = "com.reactnativesecp256k1urnm"
   }
+}
+tasks.withType(JavaCompile) {
+  options.deprecation = true
 }
