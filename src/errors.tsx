@@ -36,14 +36,3 @@ export function isUint8Array(
     }
   }
 }
-
-// function isCompressed(value: boolean) {
-//   assert(
-//     toTypeString(value) === 'Boolean',
-//     'Expected compressed to be a Boolean'
-//   );
-// }
-//
-// function toTypeString(value) {
-//   return Object.prototype.toString.call(value).slice(8, -1);
-// }

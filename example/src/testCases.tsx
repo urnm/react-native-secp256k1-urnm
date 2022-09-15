@@ -14,10 +14,11 @@ export const runTestCases = async (ctx: (result: TestCaseGroup) => void) => {
   const allResults: TestCaseGroup[] = [];
   const testCases = [
     TESTVerifySignature,
-    TESTSecKeyVerify,
-    TESTComputePublicKey,
+    TESTPrivateKeyVerify,
+    TESTPublicKeyCreate,
     TESTCreateSignature,
-    TESTPrivateKeyTweak,
+    TESTPrivateKeyTweakAdd,
+    TESTPrivateKeyTweakMultiplying,
     TESTPublicKeyTweak,
     TESTCreateECDHSecret,
     TESTEnctypt,
@@ -140,12 +141,14 @@ async function TESTVerifySignature(
   );
 }
 
-async function TESTSecKeyVerify(ctx: (result: ValidateTestCaseResult) => void) {
+async function TESTPrivateKeyVerify(
+  ctx: (result: ValidateTestCaseResult) => void
+) {
   await validateTestCase(ctx, 'Valid Private key', async () => {
     const priv = utils.decodeHex(
       '67E56582298859DDAE725F972992A07C6C4FB9F62A8FFF58CE3CA926A1063530'
     );
-    return await secp256k1.secKeyVerify(priv);
+    return await secp256k1.privateKeyVerify(priv);
   });
   await validateTestCase(
     ctx,
@@ -154,26 +157,35 @@ async function TESTSecKeyVerify(ctx: (result: ValidateTestCaseResult) => void) {
       const priv = utils.decodeHex(
         'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF'
       );
-      return await secp256k1.secKeyVerify(priv);
+      return await secp256k1.privateKeyVerify(priv);
+    },
+    true
+  );
+
+  await validateTestCase(
+    ctx,
+    'Invalid Private key length',
+    async () => {
+      return await secp256k1.privateKeyVerify(new Uint8Array(10));
     },
     true
   );
 }
 
-async function TESTComputePublicKey(
+async function TESTPublicKeyCreate(
   ctx: (result: ValidateTestCaseResult) => void
 ) {
   await validateTestCase(ctx, 'Valid Public key', async () => {
     const priv = utils.decodeHex(
       '67E56582298859DDAE725F972992A07C6C4FB9F62A8FFF58CE3CA926A1063530'
     );
-    return (await secp256k1.computePubkey(priv, false)).length === 65;
+    return (await secp256k1.publicKeyCreate(priv, false)).length === 65;
   });
   await validateTestCase(ctx, 'Valid Public key compressed', async () => {
     const priv = utils.decodeHex(
       '67E56582298859DDAE725F972992A07C6C4FB9F62A8FFF58CE3CA926A1063530'
     );
-    return (await secp256k1.computePubkey(priv, true)).length === 33;
+    return (await secp256k1.publicKeyCreate(priv, true)).length === 33;
   });
   await validateTestCase(
     ctx,
@@ -182,7 +194,7 @@ async function TESTComputePublicKey(
       const priv = utils.decodeHex(
         'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF'
       );
-      return (await secp256k1.computePubkey(priv)).length !== 0;
+      return (await secp256k1.publicKeyCreate(priv)).length !== 0;
     },
     true
   );
@@ -273,17 +285,17 @@ async function TESTCreateSignature(
   );
 }
 
-async function TESTPrivateKeyTweak(
+async function TESTPrivateKeyTweakAdd(
   ctx: (result: ValidateTestCaseResult) => void
 ) {
-  await validateTestCase(ctx, 'Valid Private Key Tweak Add', async () => {
+  await validateTestCase(ctx, 'Valid Tweak Add', async () => {
     const priv = utils.decodeHex(
       '67E56582298859DDAE725F972992A07C6C4FB9F62A8FFF58CE3CA926A1063530'
     );
     const data = utils.decodeHex(
       '3982F19BEF1615BCCFBB05E321C10E1D4CBA3DF0E841C2E41EEB6016347653C3'
     );
-    let tweak = utils.encodeHex(await secp256k1.privKeyTweakAdd(priv, data));
+    let tweak = utils.encodeHex(await secp256k1.privateKeyTweakAdd(priv, data));
 
     return (
       tweak ===
@@ -291,20 +303,106 @@ async function TESTPrivateKeyTweak(
     );
   });
 
-  await validateTestCase(ctx, 'Valid Private Key Tweak Mul', async () => {
-    const priv = utils.decodeHex(
-      '67E56582298859DDAE725F972992A07C6C4FB9F62A8FFF58CE3CA926A1063530'
-    );
-    const data = utils.decodeHex(
-      '3982F19BEF1615BCCFBB05E321C10E1D4CBA3DF0E841C2E41EEB6016347653C3'
-    );
-    let tweak = utils.encodeHex(await secp256k1.privKeyTweakMul(priv, data));
+  await validateTestCase(
+    ctx,
+    'Tweak Add invalid Private key length',
+    async () => {
+      const data = utils.decodeHex(
+        '3982F19BEF1615BCCFBB05E321C10E1D4CBA3DF0E841C2E41EEB6016347653C3'
+      );
+      let tweak = utils.encodeHex(
+        await secp256k1.privateKeyTweakAdd(new Uint8Array(20), data)
+      );
 
-    return (
-      tweak ===
-      '97F8184235F101550F3C71C927507651BD3F1CDB4A5A33B8986ACF0DEE20FFFC'
-    );
-  });
+      return (
+        tweak ===
+        'A168571E189E6F9A7E2D657A4B53AE99B909F7E712D1C23CED28093CD57C88F3'
+      );
+    },
+    true
+  );
+
+  await validateTestCase(
+    ctx,
+    'Tweak Add invalid data length',
+    async () => {
+      const priv = utils.decodeHex(
+        '67E56582298859DDAE725F972992A07C6C4FB9F62A8FFF58CE3CA926A1063530'
+      );
+      let tweak = utils.encodeHex(
+        await secp256k1.privateKeyTweakAdd(priv, new Uint8Array(20))
+      );
+
+      return (
+        tweak ===
+        'A168571E189E6F9A7E2D657A4B53AE99B909F7E712D1C23CED28093CD57C88F3'
+      );
+    },
+    true
+  );
+}
+
+async function TESTPrivateKeyTweakMultiplying(
+  ctx: (result: ValidateTestCaseResult) => void
+) {
+  await validateTestCase(
+    ctx,
+    'Valid Private Key Tweak Multiplying',
+    async () => {
+      const priv = utils.decodeHex(
+        '67E56582298859DDAE725F972992A07C6C4FB9F62A8FFF58CE3CA926A1063530'
+      );
+      const data = utils.decodeHex(
+        '3982F19BEF1615BCCFBB05E321C10E1D4CBA3DF0E841C2E41EEB6016347653C3'
+      );
+      let tweak = utils.encodeHex(
+        await secp256k1.privateKeyTweakMul(priv, data)
+      );
+
+      return (
+        tweak ===
+        '97F8184235F101550F3C71C927507651BD3F1CDB4A5A33B8986ACF0DEE20FFFC'
+      );
+    }
+  );
+
+  await validateTestCase(
+    ctx,
+    'Tweak Multiplying invalid Private key len',
+    async () => {
+      const data = utils.decodeHex(
+        '3982F19BEF1615BCCFBB05E321C10E1D4CBA3DF0E841C2E41EEB6016347653C3'
+      );
+      let tweak = utils.encodeHex(
+        await secp256k1.privateKeyTweakMul(new Uint8Array(20), data)
+      );
+
+      return (
+        tweak ===
+        'A168571E189E6F9A7E2D657A4B53AE99B909F7E712D1C23CED28093CD57C88F3'
+      );
+    },
+    true
+  );
+
+  await validateTestCase(
+    ctx,
+    'Tweak Multiplying invalid data len',
+    async () => {
+      const priv = utils.decodeHex(
+        '67E56582298859DDAE725F972992A07C6C4FB9F62A8FFF58CE3CA926A1063530'
+      );
+      let tweak = utils.encodeHex(
+        await secp256k1.privateKeyTweakMul(priv, new Uint8Array(20))
+      );
+
+      return (
+        tweak ===
+        'A168571E189E6F9A7E2D657A4B53AE99B909F7E712D1C23CED28093CD57C88F3'
+      );
+    },
+    true
+  );
 }
 
 async function TESTPublicKeyTweak(

@@ -66,61 +66,84 @@ export async function sign(
   return stablelibUtil.decodeBase64(bSignature);
 }
 
-export async function secKeyVerify(priv: Uint8Array): Promise<boolean> {
-  const bPriv = stablelibUtil.encodeBase64WithoutPadding(priv);
-  return await Secp256k1Urnm.secKeyVerify(bPriv);
+export async function privateKeyVerify(seckey: Uint8Array): Promise<boolean> {
+  isUint8Array('private key', seckey, 32);
+
+  const bSeckey = stablelibUtil.encodeBase64WithoutPadding(seckey);
+  return await Secp256k1Urnm.secKeyVerify(bSeckey);
 }
 
-export async function computePubkey(
-  priv: Uint8Array,
+export async function publicKeyCreate(
+  seckey: Uint8Array,
   compressed?: boolean
 ): Promise<Uint8Array> {
-  const bPriv = stablelibUtil.encodeBase64WithoutPadding(priv);
-  const bPub = await Secp256k1Urnm.computePubkey(bPriv, !!compressed);
+  isUint8Array('private key', seckey, 32);
+
+  const bSeckey = stablelibUtil.encodeBase64WithoutPadding(seckey);
+  const bPub = await Secp256k1Urnm.computePubkey(bSeckey, !!compressed);
   return stablelibUtil.decodeBase64(bPub);
 }
 
 export async function createECDHSecret(
-  priv: Uint8Array,
-  pub: Uint8Array
+  seckey: Uint8Array,
+  pubkey: Uint8Array
 ): Promise<Uint8Array> {
-  const bPriv = stablelibUtil.encodeBase64WithoutPadding(priv);
-  const bPub = stablelibUtil.encodeBase64WithoutPadding(pub);
-  const bSecret = await Secp256k1Urnm.createECDHSecret(bPriv, bPub);
+  isUint8Array('public key', pubkey, [33, 65]);
+  isUint8Array('private key', seckey, 32);
+
+  const bSeckey = stablelibUtil.encodeBase64WithoutPadding(seckey);
+  const bPubkey = stablelibUtil.encodeBase64WithoutPadding(pubkey);
+  const bSecret = await Secp256k1Urnm.createECDHSecret(bSeckey, bPubkey);
   return stablelibUtil.decodeBase64(bSecret);
 }
 
-export async function privKeyTweakMul(priv: Uint8Array, tweak: Uint8Array) {
-  const bPriv = stablelibUtil.encodeBase64WithoutPadding(priv);
+export async function privateKeyTweakMul(
+  seckey: Uint8Array,
+  tweak: Uint8Array
+) {
+  isUint8Array('private key', seckey, 32);
+  isUint8Array('tweak', tweak, 32);
+
+  const bSeckey = stablelibUtil.encodeBase64WithoutPadding(seckey);
   const bTweak = stablelibUtil.encodeBase64WithoutPadding(tweak);
-  const bResult = await Secp256k1Urnm.privKeyTweakMul(bPriv, bTweak);
+  const bResult = await Secp256k1Urnm.privKeyTweakMul(bSeckey, bTweak);
   return stablelibUtil.decodeBase64(bResult);
 }
-export async function privKeyTweakAdd(
-  priv: Uint8Array,
+export async function privateKeyTweakAdd(
+  seckey: Uint8Array,
   tweak: Uint8Array
 ): Promise<Uint8Array> {
-  const bPriv = stablelibUtil.encodeBase64WithoutPadding(priv);
+  isUint8Array('private key', seckey, 32);
+  isUint8Array('tweak', tweak, 32);
+
+  const bSeckey = stablelibUtil.encodeBase64WithoutPadding(seckey);
   const bTweak = stablelibUtil.encodeBase64WithoutPadding(tweak);
-  const bResult = await Secp256k1Urnm.privKeyTweakAdd(bPriv, bTweak);
-  return stablelibUtil.decodeBase64(bResult);
-}
-export async function pubKeyTweakMul(
-  pub: Uint8Array,
-  tweak: Uint8Array
-): Promise<Uint8Array> {
-  const bPub = stablelibUtil.encodeBase64WithoutPadding(pub);
-  const bTweak = stablelibUtil.encodeBase64WithoutPadding(tweak);
-  const bResult = await Secp256k1Urnm.pubKeyTweakMul(bPub, bTweak);
+  const bResult = await Secp256k1Urnm.privKeyTweakAdd(bSeckey, bTweak);
   return stablelibUtil.decodeBase64(bResult);
 }
 export async function pubKeyTweakAdd(
-  pub: Uint8Array,
+  pubkey: Uint8Array,
   tweak: Uint8Array
 ): Promise<Uint8Array> {
-  const bPub = stablelibUtil.encodeBase64WithoutPadding(pub);
+  isUint8Array('public key', pubkey, [33, 65]);
+  isUint8Array('tweak', tweak, 32);
+
+  const bPubkey = stablelibUtil.encodeBase64WithoutPadding(pubkey);
   const bTweak = stablelibUtil.encodeBase64WithoutPadding(tweak);
-  const bResult = await Secp256k1Urnm.pubKeyTweakAdd(bPub, bTweak);
+  const bResult = await Secp256k1Urnm.pubKeyTweakAdd(bPubkey, bTweak);
+  return stablelibUtil.decodeBase64(bResult);
+}
+
+export async function pubKeyTweakMul(
+  pubkey: Uint8Array,
+  tweak: Uint8Array
+): Promise<Uint8Array> {
+  isUint8Array('public key', pubkey, [33, 65]);
+  isUint8Array('tweak', tweak, 32);
+
+  const bPubkey = stablelibUtil.encodeBase64WithoutPadding(pubkey);
+  const bTweak = stablelibUtil.encodeBase64WithoutPadding(tweak);
+  const bResult = await Secp256k1Urnm.pubKeyTweakMul(bPubkey, bTweak);
   return stablelibUtil.decodeBase64(bResult);
 }
 
@@ -131,10 +154,10 @@ export const base64 = secp256k1base64;
 export default {
   verify,
   sign,
-  secKeyVerify,
-  computePubkey,
-  privKeyTweakAdd,
-  privKeyTweakMul,
+  privateKeyVerify,
+  publicKeyCreate,
+  privateKeyTweakAdd,
+  privateKeyTweakMul,
   pubKeyTweakMul,
   pubKeyTweakAdd,
   createECDHSecret,
