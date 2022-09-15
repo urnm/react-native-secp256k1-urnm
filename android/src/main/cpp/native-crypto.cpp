@@ -17,27 +17,26 @@
 #define DECOMPRESSED_PUBKEY_LENGTH 65
 #define PRIVKEY_LENGTH 64
 
-void bytesToHex(uint8_t * in, int inlen, char * out)
-{
-    uint8_t * pin = in;
-    const char * hex = "0123456789abcdef";
-    char * pout = out;
-    for(; pin < in+inlen; pout +=2, pin++){
-        pout[0] = hex[(*pin>>4) & 0xF];
-        pout[1] = hex[ *pin     & 0xF];
+void bytesToHex(uint8_t *in, int inlen, char *out) {
+    uint8_t *pin = in;
+    const char *hex = "0123456789abcdef";
+    char *pout = out;
+    for (; pin < in + inlen; pout += 2, pin++) {
+        pout[0] = hex[(*pin >> 4) & 0xF];
+        pout[1] = hex[*pin & 0xF];
     }
     pout[0] = 0;
 }
 
-bool hexToBytes(const char * string, uint8_t *outBytes) {
+bool hexToBytes(const char *string, uint8_t *outBytes) {
     uint8_t *data = outBytes;
 
-    if(string == NULL)
-       return false;
+    if (string == NULL)
+        return false;
 
     size_t slength = strlen(string);
-    if(slength % 2 != 0) // must be even
-       return false;
+    if (slength % 2 != 0) // must be even
+        return false;
 
     size_t dlength = slength / 2;
 
@@ -47,16 +46,16 @@ bool hexToBytes(const char * string, uint8_t *outBytes) {
     while (index < slength) {
         char c = string[index];
         int value = 0;
-        if(c >= '0' && c <= '9')
+        if (c >= '0' && c <= '9')
             value = (c - '0');
         else if (c >= 'A' && c <= 'F')
             value = (10 + (c - 'A'));
         else if (c >= 'a' && c <= 'f')
-             value = (10 + (c - 'a'));
+            value = (10 + (c - 'a'));
         else
             return false;
 
-        data[(index/2)] += value << (((index + 1) % 2) * 4);
+        data[(index / 2)] += value << (((index + 1) % 2) * 4);
 
         index++;
     }
@@ -67,8 +66,8 @@ bool hexToBytes(const char * string, uint8_t *outBytes) {
 secp256k1_context *secp256k1ctx = NULL;
 
 // Must pass a privateKey of length 64 bytes
-void fast_crypto_secp256k1_ec_pubkey_create(const char *szPrivateKeyHex, char *szPublicKeyHex, int compressed)
-{
+void native_crypto_secp256k1_ec_pubkey_create(const char *szPrivateKeyHex, char *szPublicKeyHex,
+                                              int compressed) {
     if (secp256k1ctx == NULL) {
         secp256k1ctx = secp256k1_context_create(SECP256K1_CONTEXT_SIGN | SECP256K1_CONTEXT_VERIFY);
     }
@@ -95,7 +94,7 @@ void fast_crypto_secp256k1_ec_pubkey_create(const char *szPrivateKeyHex, char *s
 
 // secp256k1_pubkey public_key;
 
-void fast_crypto_secp256k1_ec_privkey_tweak_add(char *szPrivateKeyHex, const char *szTweak) {
+void native_crypto_secp256k1_ec_privkey_tweak_add(char *szPrivateKeyHex, const char *szTweak) {
     if (secp256k1ctx == NULL) {
         secp256k1ctx = secp256k1_context_create(SECP256K1_CONTEXT_SIGN | SECP256K1_CONTEXT_VERIFY);
     }
@@ -113,11 +112,12 @@ void fast_crypto_secp256k1_ec_privkey_tweak_add(char *szPrivateKeyHex, const cha
         return;
     }
     if (secp256k1_ec_privkey_tweak_add(secp256k1ctx, privateKey, (unsigned char *) tweak) == 1) {
-        bytesToHex((uint8_t *)privateKey, privateKeyLen, szPrivateKeyHex);
+        bytesToHex((uint8_t *) privateKey, privateKeyLen, szPrivateKeyHex);
     }
 }
 
-void fast_crypto_secp256k1_ec_pubkey_tweak_add(char *szPublicKeyHex, const char *szTweak, int compressed) {
+void native_crypto_secp256k1_ec_pubkey_tweak_add(char *szPublicKeyHex, const char *szTweak,
+                                                 int compressed) {
     if (compressed != 1) {
         szPublicKeyHex[0] = 0;
         return;
@@ -159,5 +159,5 @@ void fast_crypto_secp256k1_ec_pubkey_tweak_add(char *szPublicKeyHex, const char 
     unsigned char output[DECOMPRESSED_PUBKEY_LENGTH];
     size_t output_length = DECOMPRESSED_PUBKEY_LENGTH;
     secp256k1_ec_pubkey_serialize(secp256k1ctx, &output[0], &output_length, &public_key, flags);
-    bytesToHex((uint8_t *)output, output_length, szPublicKeyHex);
+    bytesToHex((uint8_t *) output, output_length, szPublicKeyHex);
 }

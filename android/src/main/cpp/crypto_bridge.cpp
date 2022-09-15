@@ -1,4 +1,3 @@
-//fastCrypto.cpp
 #include <android/log.h>
 #include <jni.h>
 #include "native-crypto.h"
@@ -231,7 +230,7 @@ Java_com_reactnativesecp256k1urnm_Secp256k1UrnmModule_secp256k1EcPubkeyCreateJNI
 
     char szPublicKeyHex[privateKeyLen * 2];
 
-    fast_crypto_secp256k1_ec_pubkey_create(szPrivateKeyHex, szPublicKeyHex, jiCompressed);
+    native_crypto_secp256k1_ec_pubkey_create(szPrivateKeyHex, szPublicKeyHex, jiCompressed);
     jstring out = env->NewStringUTF(szPublicKeyHex);
     env->ReleaseStringUTFChars(jsPrivateKeyHex, szPrivateKeyHex);
 
@@ -265,7 +264,7 @@ Java_com_reactnativesecp256k1urnm_Secp256k1UrnmModule_secp256k1EcPrivkeyTweakAdd
         }
     }
 
-    fast_crypto_secp256k1_ec_privkey_tweak_add(szPrivateKeyHex, szTweakHex);
+    native_crypto_secp256k1_ec_privkey_tweak_add(szPrivateKeyHex, szTweakHex);
     jstring out = env->NewStringUTF(szPrivateKeyHex);
     env->ReleaseStringUTFChars(jsPrivateKeyHex, szPrivateKeyHexTemp);
     env->ReleaseStringUTFChars(jsTweakHex, szTweakHex);
@@ -300,7 +299,7 @@ Java_com_reactnativesecp256k1urnm_Secp256k1UrnmModule_secp256k1EcPubkeyTweakAddJ
         }
     }
 
-    fast_crypto_secp256k1_ec_pubkey_tweak_add(szPublicKeyHex, szTweakHex, jiCompressed);
+    native_crypto_secp256k1_ec_pubkey_tweak_add(szPublicKeyHex, szTweakHex, jiCompressed);
     jstring out = env->NewStringUTF(szPublicKeyHex);
     env->ReleaseStringUTFChars(jsPublicKeyHex, szPublicKeyHexTemp);
     env->ReleaseStringUTFChars(jsTweakHex, szTweakHex);
