@@ -70,17 +70,19 @@ main().then(() => {
 import * as secp256k1 from 'react-native-secp256k1-urnm';
 ```
 
-| Method                                                               | Params                                                             | Return type          | Description |
-|----------------------------------------------------------------------|--------------------------------------------------------------------|----------------------|-------------|
-| **verify**(sig: Unit8Array, mes32: Unit8Array, pubkey: Unit8Array)   | `sig`: signature, `mes32`: message to verify, `pubkey`: Unit8Array | Promise\<boolean>    |             |
-| **sign**(msg32: Unit8Array, privKey: Unit8Array)                     | `sig`: signature, `privKey`: Unit8Array                            | Promise\<Unit8Array> |             |
-| **privateKeyVerify**(privKey: Unit8Array)                            | `privKey`: Unit8Array                                              | Promise\<boolean>    |             |
-| **publicKeyCreate**(privKey: Uint8Array, compressed?: boolean)       | `privKey`: Unit8Array, `compressed`: boolean                       | Promise\<Unit8Array> |             |
-| **privateKeyTweakAdd**(privKey: Unit8Array, tweak: Unit8Array)       | `privKey`: Unit8Array, `tweak`: Unit8Array                         | Promise\<Uint8Array> |             |
-| **privateKeyTweakMul**(privKey: Unit8Array, tweak: Unit8Array)       | `privKey`: Unit8Array, `tweak`: Unit8Array                         | Promise\<Uint8Array> |             |
-| **pubKeyTweakAdd**(pubKey: Unit8Array, tweak: Unit8Array)            | `pubKey`: Unit8Array, `tweak`: Unit8Array                          | Promise\<Uint8Array> |             |
-| **pubKeyTweakMul**(pubKey: Unit8Array, tweak: Unit8Array)            | `pubKey`: Unit8Array, `tweak`: Unit8Array                          | Promise\<Uint8Array> |             |
-| **createECDHSecret**(privKey: Unit8Array, pubKey: Unit8Array)        | `privKey`: Unit8Array, `pubKey`: Unit8Array                        | Promise\<Uint8Array> |             |
+- Functions work with [Uint8Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array).
+
+| Method                                                               | Params                                                             | Return type          | Description                                                   |
+|----------------------------------------------------------------------|--------------------------------------------------------------------|----------------------|---------------------------------------------------------------|
+| **verify**(sig: Unit8Array, mes32: Unit8Array, pubkey: Unit8Array)   | `sig`: signature, `mes32`: message to verify, `pubkey`: Unit8Array | Promise\<boolean>    | Verify an ECDSA signature.                                    |
+| **sign**(msg32: Unit8Array, privKey: Unit8Array)                     | `sig`: signature, `privKey`: Unit8Array                            | Promise\<Unit8Array> | Create an ECDSA signature.                                    |
+| **privateKeyVerify**(privKey: Unit8Array)                            | `privKey`: Unit8Array                                              | Promise\<boolean>    | Verify a private key.                                         |
+| **publicKeyCreate**(privKey: Uint8Array, compressed?: boolean)       | `privKey`: Unit8Array, `compressed`: boolean                       | Promise\<Unit8Array> | Compute the public key for a secret key.                      |
+| **privateKeyTweakAdd**(privKey: Unit8Array, tweak: Unit8Array)       | `privKey`: Unit8Array, `tweak`: Unit8Array                         | Promise\<Uint8Array> | Tweak a private key in place by adding tweak to it.           |
+| **privateKeyTweakMul**(privKey: Unit8Array, tweak: Unit8Array)       | `privKey`: Unit8Array, `tweak`: Unit8Array                         | Promise\<Uint8Array> | Tweak a private key in place by multiplying it by a tweak.    |
+| **pubKeyTweakAdd**(pubKey: Unit8Array, tweak: Unit8Array)            | `pubKey`: Unit8Array, `tweak`: Unit8Array                          | Promise\<Uint8Array> | Tweak a public key by adding tweak times the generator to it. |
+| **pubKeyTweakMul**(pubKey: Unit8Array, tweak: Unit8Array)            | `pubKey`: Unit8Array, `tweak`: Unit8Array                          | Promise\<Uint8Array> | Tweak a public key by multiplying it by a tweak value.        |
+| **createECDHSecret**(privKey: Unit8Array, pubKey: Unit8Array)        | `privKey`: Unit8Array, `pubKey`: Unit8Array                        | Promise\<Uint8Array> | Compute an EC Diffie-Hellman secret in constant time.         |
 
 ### Ext methods
 
@@ -88,11 +90,11 @@ import * as secp256k1 from 'react-native-secp256k1-urnm';
 import { ext } from 'react-native-secp256k1-urnm';
 ```
 
-| Method                                                          | Params                                                                         | Return type               | Description |
-|-----------------------------------------------------------------|--------------------------------------------------------------------------------|---------------------------|-------------|
-| **generateKey**()                                               |                                                                                | Promise\<*base64* string> |             |
-| **encryptECDH**(privKey: string, pubKey: string, data: string)  | `privKey`: *base64* string, `pubKey`: *base64* string, `data`: *base64* string | Promise\<*base64* string> |             |
-| **decryptECDH**(privKey: string, pubKey: string, data: string)  | `privKey`: *base64* string, `pubKey`: *base64* string, `data`: *base64* string | Promise\<*base64* string> |             |
+| Method                                                          | Params                                                                         | Return type               | Description                       |
+|-----------------------------------------------------------------|--------------------------------------------------------------------------------|---------------------------|-----------------------------------|
+| **generateKey**()                                               |                                                                                | Promise\<*base64* string> | Create a random private key       |
+| **encryptECDH**(privKey: string, pubKey: string, data: string)  | `privKey`: *base64* string, `pubKey`: *base64* string, `data`: *base64* string | Promise\<*base64* string> | Encrypt data an EC Diffie-Hellman |
+| **decryptECDH**(privKey: string, pubKey: string, data: string)  | `privKey`: *base64* string, `pubKey`: *base64* string, `data`: *base64* string | Promise\<*base64* string> | Decrypt data an EC Diffie-Hellman |
 
 ### Utils methods
 
@@ -100,16 +102,16 @@ import { ext } from 'react-native-secp256k1-urnm';
 import { utils } from 'react-native-secp256k1-urnm';
 ```
 
-| Method                                           | Params                  | Return type     | Description |
-|--------------------------------------------------|-------------------------|-----------------|-------------|
-| **encodeBase64**(data: Uint8Array)               | `data`: Uint8Array      | *base64* string |             |
-| **decodeBase64**(base64: string)                 | `data`: *base64* string | Uint8Array      |             |
-| **encodeHex**(data: Uint8Array)                  | `data`: Uint8Array      | *base64* string |             |
-| **decodeHex**(base64: string)                    | `data`: *base64* string | Uint8Array      |             |
-| **encodeBase64WithoutPadding**(data: Uint8Array) | `data`: Uint8Array      | *base64* string |             |
-| **decodeBase64WithoutPadding**(base64: string)   | `data`: *base64* string | Uint8Array      |             |
-| **removeBase64Padding**(base64: string)          | `data`: *base64* string | *base64* string |             |
-| **addBase64Padding**(base64: string)             | `data`: *base64* string | *base64* string |             |
+| Method                                           | Params                  | Return type     | Description                                                                                           |
+|--------------------------------------------------|-------------------------|-----------------|-------------------------------------------------------------------------------------------------------|
+| **encodeBase64**(data: Uint8Array)               | `data`: Uint8Array      | *base64* string | Provide [@stablelib/base64](https://www.stablelib.com/modules/_stablelib_base64.html) encode function |
+| **decodeBase64**(base64: string)                 | `data`: *base64* string | Uint8Array      | Provide [@stablelib/base64](https://www.stablelib.com/modules/_stablelib_base64.html) decode function |
+| **encodeHex**(data: Uint8Array)                  | `data`: Uint8Array      | *base64* string | Provide [@stablelib/hex](https://www.stablelib.com/modules/_stablelib_hex.html) encode function       |
+| **decodeHex**(base64: string)                    | `data`: *base64* string | Uint8Array      | Provide [@stablelib/hex](https://www.stablelib.com/modules/_stablelib_hex.html) decode function       |
+| **encodeBase64WithoutPadding**(data: Uint8Array) | `data`: Uint8Array      | *base64* string | Encode Unit8Array to base64 string without paddings(`=`). Used `@stablelib/base64`.                   |
+| **decodeBase64WithoutPadding**(base64: string)   | `data`: *base64* string | Uint8Array      | Decode Unit8Array to base64 string without paddings(`=`). Used `@stablelib/base64`.                   |
+| **removeBase64Padding**(base64: string)          | `data`: *base64* string | *base64* string | Remove paddings(`=`) from base64 string                                                               |
+| **addBase64Padding**(base64: string)             | `data`: *base64* string | *base64* string | Add paddings(`=`) to base64 string                                                                    |
 
 ### Base64 methods
 
@@ -117,17 +119,17 @@ import { utils } from 'react-native-secp256k1-urnm';
 import { base64 } from 'react-native-secp256k1-urnm';
 ```
 
-| Method                                                     | Params                                                                       | Return type               | Description |
-|------------------------------------------------------------|------------------------------------------------------------------------------|---------------------------|-------------|
-| **verify**(sig: string, mes32: string, pubkey: string)     | `sig`: *base64* string, `mes32`: *base64* string, `pubkey`: *base64* string  | Promise\<boolean>         |             |
-| **sign**(msg32: string, privKey: string)                   | `sig`: *base64* string, `privKey`: *base64* string                           | Promise\<*base64* string> |             |
-| **privateKeyVerify**(privKey: string)                      | `privKey`: *base64* string                                                   | Promise\<boolean>         |             |
-| **publicKeyCreate**(privKey: string, compressed?: boolean) | `privKey`: *base64* string, `compressed`: boolean                            | Promise\<*base64* string> |             |
-| **privateKeyTweakAdd**(privKey: string, tweak: string)     | `privKey`: *base64* string, `tweak`: *base64* string                         | Promise\<*base64* string> |             |
-| **privateKeyTweakMul**(privKey: string, tweak: string)     | `privKey`: *base64* string, `tweak`: *base64* string                         | Promise\<*base64* string> |             |
-| **pubKeyTweakAdd**(pubKey: string, tweak: string)          | `pubKey`: *base64* string, `tweak`: *base64* string                          | Promise\<*base64* string> |             |
-| **pubKeyTweakMul**(pubKey: string, tweak: string)          | `pubKey`: *base64* string, `tweak`: *base64* string                          | Promise\<*base64* string> |             |
-| **createECDHSecret**(privKey: string, pubKey: string)      | `privKey`: *base64* string, `pubKey`: *base64* string                        | Promise\<*base64* string> |             |
+| Method                                                     | Params                                                                       | Return type               | Description                                                   |
+|------------------------------------------------------------|------------------------------------------------------------------------------|---------------------------|---------------------------------------------------------------|
+| **verify**(sig: string, mes32: string, pubkey: string)     | `sig`: *base64* string, `mes32`: *base64* string, `pubkey`: *base64* string  | Promise\<boolean>         | Verify an ECDSA signature.                                    |
+| **sign**(msg32: string, privKey: string)                   | `sig`: *base64* string, `privKey`: *base64* string                           | Promise\<*base64* string> | Create an ECDSA signature.                                    |
+| **privateKeyVerify**(privKey: string)                      | `privKey`: *base64* string                                                   | Promise\<boolean>         | Verify a private key.                                         |
+| **publicKeyCreate**(privKey: string, compressed?: boolean) | `privKey`: *base64* string, `compressed`: boolean                            | Promise\<*base64* string> | Compute the public key for a secret key.                      |
+| **privateKeyTweakAdd**(privKey: string, tweak: string)     | `privKey`: *base64* string, `tweak`: *base64* string                         | Promise\<*base64* string> | Tweak a private key in place by adding tweak to it.           |
+| **privateKeyTweakMul**(privKey: string, tweak: string)     | `privKey`: *base64* string, `tweak`: *base64* string                         | Promise\<*base64* string> | Tweak a private key in place by multiplying it by a tweak.    |
+| **pubKeyTweakAdd**(pubKey: string, tweak: string)          | `pubKey`: *base64* string, `tweak`: *base64* string                          | Promise\<*base64* string> | Tweak a public key by adding tweak times the generator to it. |
+| **pubKeyTweakMul**(pubKey: string, tweak: string)          | `pubKey`: *base64* string, `tweak`: *base64* string                          | Promise\<*base64* string> | Tweak a public key by multiplying it by a tweak value.        |
+| **createECDHSecret**(privKey: string, pubKey: string)      | `privKey`: *base64* string, `pubKey`: *base64* string                        | Promise\<*base64* string> | Compute an EC Diffie-Hellman secret in constant time.         |
 
 
 ## Contributing
