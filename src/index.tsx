@@ -100,7 +100,7 @@ export async function createECDHSecret(
 export async function privateKeyTweakMul(
   seckey: Uint8Array,
   tweak: Uint8Array
-) {
+): Promise<Uint8Array> {
   isUint8Array('private key', seckey, 32);
   isUint8Array('tweak', tweak, 32);
 
