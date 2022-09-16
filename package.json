@@ -1,6 +1,6 @@
 {
   "name": "react-native-secp256k1-urnm",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "This module provides native bindings to bitcoin-core/secp256k1 for React Native.",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -37,13 +37,13 @@
     "ios",
     "android"
   ],
-  "repository": "https://github.com/urnm/react-native-secp256k1-urnm/react-native-secp256k1-urnm",
+  "repository": "https://github.com/urnm/react-native-secp256k1-urnm",
   "author": "uranium <ilya@uranium.pro> (https://github.com/urnm/react-native-secp256k1-urnm)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/urnm/react-native-secp256k1-urnm/react-native-secp256k1-urnm/issues"
+    "url": "https://github.com/urnm/react-native-secp256k1-urnm/issues"
   },
-  "homepage": "https://github.com/urnm/react-native-secp256k1-urnm/react-native-secp256k1-urnm#readme",
+  "homepage": "https://github.com/urnm/react-native-secp256k1-urnm/#readme",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
