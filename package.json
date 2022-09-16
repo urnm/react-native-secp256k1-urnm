@@ -1,7 +1,7 @@
 {
   "name": "react-native-secp256k1-urnm",
   "version": "0.1.0",
-  "description": "test",
+  "description": "This module provides native bindings to bitcoin-core/secp256k1 for React Native.",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
   "types": "lib/typescript/index.d.ts",
