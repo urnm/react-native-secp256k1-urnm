@@ -2,11 +2,18 @@
 
 This module provides native bindings to [bitcoin-core/secp256k1](https://github.com/bitcoin-core/secp256k1) for React Native.
 
-
-- [Installation](#installation)
-- [Demo](#demo)
-- [Usage](#usage)
-- [Contributing](#contributing)
+<!-- TOC -->
+* [Demo](#demo)
+* [Installation](#installation)
+* [Usage](#usage)
+* [API](#api)
+  * [Base methods](#base-methods)
+  * [Ext methods](#ext-methods)
+  * [Utils methods](#utils-methods)
+  * [Base64 methods](#base64-methods)
+* [Contributing](#contributing)
+* [License](#license)
+<!-- TOC -->
 
 ## Demo
 ![Example test cases](https://user-images.githubusercontent.com/1748318/190282980-0e708264-d490-4104-998f-f05778f56fbc.png)
